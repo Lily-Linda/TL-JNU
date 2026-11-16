@@ -1,0 +1,1726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>真光 · 暨南 校友站</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    /* ========== 全局变量与重置 ========== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+    }
+
+    :root {
+      --jinan-blue: #003366;
+      --jinan-blue-light: #1a4a7a;
+      --jinan-blue-dark: #002244;
+      --zhenguang-red: #A41F35;
+      --gold: #D4AF37;
+      --light-bg: #f0f4fa;
+      --card-bg: #ffffff;
+      --text-dark: #1e1e1e;
+      --text-soft: #3a4a5a;
+      --shadow-sm: 0 8px 20px rgba(0, 51, 102, 0.08);
+      --shadow-hover: 0 18px 30px rgba(0, 51, 102, 0.15);
+      --radius: 20px;
+      --transition: all 0.3s ease;
+    }
+
+    body {
+      background-color: var(--light-bg);
+      color: var(--text-dark);
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ========== 主布局 ========== */
+    .app-wrapper {
+      display: flex;
+      min-height: 100vh;
+      width: 100%;
+      position: relative;
+    }
+
+    /* ---------- 左侧抽屉导航 ---------- */
+    .sidebar {
+      width: 280px;
+      background: var(--jinan-blue);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 2rem 1.5rem;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      z-index: 100;
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+      transform: translateX(0);
+      transition: transform 0.3s ease;
+      overflow-y: auto;
+      /* 暨大官网风格顶部花纹背景 */
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><path d="M0 50 Q 25 30, 50 50 T 100 50" fill="none" stroke="%23ffffff" stroke-width="0.8" opacity="0.1"/><path d="M0 70 Q 25 50, 50 70 T 100 70" fill="none" stroke="%23ffffff" stroke-width="0.8" opacity="0.1"/></svg>');
+      background-repeat: repeat;
+    }
+
+    .sidebar.collapsed {
+      transform: translateX(-100%);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 2rem;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-icon {
+      background: white;
+      color: var(--jinan-blue);
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.8rem;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .logo-text {
+      font-weight: 700;
+      font-size: 1.4rem;
+      line-height: 1.3;
+      letter-spacing: 0.5px;
+    }
+
+    .logo-text span {
+      font-weight: 300;
+      font-size: 0.85rem;
+      display: block;
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+      flex: 1;
+      position: relative;
+      z-index: 1;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+      padding: 0.7rem 0.9rem;
+      border-radius: 12px;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 0.98rem;
+      backdrop-filter: blur(4px);
+    }
+
+    .nav-links a i {
+      width: 22px;
+      text-align: center;
+      color: var(--gold);
+    }
+
+    .nav-links a:hover,
+    .nav-links a.active {
+      background: rgba(255, 255, 255, 0.15);
+      color: white;
+      transform: translateX(4px);
+    }
+
+    .nav-links a.active {
+      background: rgba(255, 255, 255, 0.2);
+      border-left: 4px solid var(--gold);
+    }
+
+    .user-badge {
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      padding: 0.8rem 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: var(--transition);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      position: relative;
+      z-index: 1;
+      backdrop-filter: blur(4px);
+    }
+
+    .user-badge:hover {
+      background: rgba(255, 255, 255, 0.2);
+    }
+
+    .user-badge i {
+      color: var(--gold);
+      font-size: 1.3rem;
+    }
+
+    .user-badge .badge-count {
+      background: var(--zhenguang-red);
+      color: white;
+      border-radius: 40px;
+      padding: 0.15rem 0.7rem;
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-left: auto;
+    }
+
+    /* 主内容区 */
+    .main-content {
+      flex: 1;
+      margin-left: 280px;
+      padding: 2rem 2.5rem;
+      transition: margin-left 0.3s ease;
+      width: calc(100% - 280px);
+    }
+
+    .main-content.full-width {
+      margin-left: 0;
+      width: 100%;
+    }
+
+    /* 移动端菜单切换按钮 */
+    .menu-toggle {
+      display: none;
+      position: fixed;
+      top: 1.2rem;
+      left: 1.2rem;
+      z-index: 200;
+      background: var(--jinan-blue);
+      color: white;
+      border: none;
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      align-items: center;
+      justify-content: center;
+      transition: var(--transition);
+    }
+
+    .menu-toggle:hover {
+      background: var(--jinan-blue-light);
+    }
+
+    /* 页面内容区 */
+    .page {
+      display: none;
+      animation: fadeIn 0.35s ease;
+      margin-bottom: 3rem;
+    }
+
+    .page.active-page {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ========== 通用卡片样式 ========== */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+      border-left: 6px solid var(--jinan-blue);
+    }
+
+    .section-card h2 {
+      color: var(--jinan-blue);
+      margin-bottom: 1.2rem;
+      font-size: 1.8rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-card h2 i {
+      color: var(--gold);
+    }
+
+    .section-card h3 {
+      color: var(--jinan-blue-dark);
+      margin: 1.5rem 0 0.8rem;
+      font-size: 1.3rem;
+    }
+
+    .section-card p {
+      margin-bottom: 1rem;
+      font-size: 1.02rem;
+      color: var(--text-soft);
+    }
+
+    .highlight-quote {
+      background: #eef3fc;
+      border-left: 6px solid var(--gold);
+      padding: 1.2rem 1.8rem;
+      border-radius: 12px;
+      margin: 1.5rem 0;
+      font-style: italic;
+      color: var(--jinan-blue-dark);
+    }
+
+    /* ========== 背景样式：真光背景图 ========== */
+    .bg-zhenguang {
+      position: relative;
+      background-image: url('https://i.ibb.co/7Jm6Zq1/true-light-poster.jpg'); /* 占位符，请替换为您的图片链接 */
+      background-size: cover;
+      background-position: center;
+      background-blend-mode: overlay;
+      background-color: rgba(255, 255, 255, 0.85);
+    }
+
+    /* ========== 背景样式：暨大花纹 ========== */
+    .bg-jinan {
+      position: relative;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120"><path d="M0 60 Q 30 40, 60 60 T 120 60" fill="none" stroke="%23003366" stroke-width="0.5" opacity="0.1"/><path d="M0 80 Q 30 60, 60 80 T 120 80" fill="none" stroke="%23003366" stroke-width="0.5" opacity="0.1"/><path d="M0 40 Q 30 20, 60 40 T 120 40" fill="none" stroke="%23003366" stroke-width="0.5" opacity="0.1"/></svg>');
+      background-repeat: repeat;
+      background-color: #f8faff;
+    }
+
+    /* ========== 首页 ========== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2.5rem;
+      align-items: center;
+      background: linear-gradient(145deg, #ffffff, #eef3fc);
+      border-radius: var(--radius);
+      padding: 2.5rem 3rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2.5rem;
+      border-left: 8px solid var(--jinan-blue);
+    }
+
+    .hero h1 {
+      font-size: 2.8rem;
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, var(--jinan-blue) 30%, var(--jinan-blue-light));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 1rem;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      color: var(--text-soft);
+      margin-bottom: 2rem;
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--jinan-blue);
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .interactive-zone {
+      background: white;
+      padding: 1.5rem;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      border-left: 6px solid var(--gold);
+    }
+
+    .interactive-zone h3 {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--jinan-blue);
+    }
+
+    .interactive-zone h3 i {
+      color: var(--gold);
+    }
+
+    .quick-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .btn {
+      padding: 0.6rem 1.3rem;
+      border-radius: 40px;
+      border: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: white;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      border: 1px solid #d0dae8;
+    }
+
+    .btn-primary {
+      background: var(--jinan-blue);
+      color: white;
+      border: none;
+      box-shadow: 0 8px 16px rgba(0, 51, 102, 0.2);
+    }
+
+    .btn-primary:hover {
+      background: var(--jinan-blue-light);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      border: 1px solid var(--jinan-blue);
+      color: var(--jinan-blue);
+      background: transparent;
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 51, 102, 0.06);
+      transform: translateY(-2px);
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .feedback-msg {
+      font-size: 0.9rem;
+      color: var(--jinan-blue);
+      font-weight: 500;
+      min-height: 1.8rem;
+      margin-top: 0.5rem;
+    }
+
+    /* 校友卡片网格 */
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.8rem;
+    }
+
+    .section-title h2 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: var(--jinan-blue);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title h2 i {
+      color: var(--gold);
+      font-size: 1.9rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .alumni-card {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.8rem 1.5rem;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      border-top: 6px solid var(--jinan-blue);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .alumni-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .alumni-card .avatar {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      background: linear-gradient(145deg, var(--jinan-blue), var(--jinan-blue-light));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .alumni-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .alumni-card .badge {
+      display: inline-block;
+      background: #e8eef8;
+      padding: 0.2rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--jinan-blue);
+      margin-bottom: 1rem;
+      width: fit-content;
+    }
+
+    .alumni-card p {
+      color: var(--text-soft);
+      font-size: 0.95rem;
+      margin-bottom: 1.2rem;
+      flex: 1;
+    }
+
+    .card-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 0.5rem;
+    }
+
+    .like-btn {
+      background: transparent;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-soft);
+      font-weight: 500;
+      cursor: pointer;
+      padding: 0.3rem 0.8rem;
+      border-radius: 30px;
+      transition: var(--transition);
+      background: #f0f4fa;
+    }
+
+    .like-btn i {
+      color: #b0b0b0;
+      transition: var(--transition);
+    }
+
+    .like-btn.liked i {
+      color: var(--zhenguang-red);
+    }
+
+    .like-btn:hover {
+      background: #dde5f0;
+    }
+
+    .contact-link {
+      color: var(--jinan-blue);
+      font-weight: 600;
+      text-decoration: none;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .contact-link:hover {
+      color: var(--zhenguang-red);
+    }
+
+    /* ========== 校友动态 ========== */
+    .news-feed {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: 1rem;
+    }
+
+    .news-item {
+      background: var(--card-bg);
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      transition: var(--transition);
+      border-left: 6px solid var(--jinan-blue);
+    }
+
+    .news-item:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .news-content h4 {
+      font-size: 1.2rem;
+      margin-bottom: 0.3rem;
+      color: var(--jinan-blue-dark);
+    }
+
+    .news-meta {
+      font-size: 0.85rem;
+      color: #6a7a8a;
+      display: flex;
+      gap: 1.5rem;
+      margin-top: 0.4rem;
+      flex-wrap: wrap;
+    }
+
+    .news-meta i {
+      margin-right: 4px;
+      color: var(--gold);
+    }
+
+    .news-actions button {
+      background: #eef3fc;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 40px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--jinan-blue);
+    }
+
+    .news-actions button:hover {
+      background: var(--jinan-blue);
+      color: white;
+    }
+
+    /* ========== 学长学姐分享 & Q&A ========== */
+    .role-selector {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .role-option {
+      flex: 1;
+      min-width: 200px;
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.8rem;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+
+    .role-option:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .role-option.selected {
+      border-color: var(--jinan-blue);
+      background: #eef3fc;
+      box-shadow: 0 8px 20px rgba(0, 51, 102, 0.15);
+    }
+
+    .role-option i {
+      font-size: 2.5rem;
+      color: var(--jinan-blue);
+      margin-bottom: 0.8rem;
+    }
+
+    .role-option h4 {
+      font-size: 1.2rem;
+      color: var(--jinan-blue-dark);
+    }
+
+    .role-option p {
+      font-size: 0.9rem;
+      color: var(--text-soft);
+      margin-top: 0.5rem;
+    }
+
+    .share-form {
+      background: white;
+      border-radius: var(--radius);
+      padding: 2rem;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 2rem;
+    }
+
+    .share-form h3 {
+      color: var(--jinan-blue);
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .share-form h3 i {
+      color: var(--gold);
+    }
+
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--jinan-blue-dark);
+      margin-bottom: 0.4rem;
+      font-size: 0.95rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.9rem 1.2rem;
+      border-radius: 12px;
+      border: 1px solid #d0dae8;
+      font-size: 1rem;
+      transition: var(--transition);
+      background: #f9fbfe;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--jinan-blue);
+      box-shadow: 0 0 0 4px rgba(0, 51, 102, 0.08);
+    }
+
+    .form-group textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .share-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      margin-top: 2rem;
+    }
+
+    .share-item {
+      background: white;
+      border-radius: var(--radius);
+      padding: 1.5rem 2rem;
+      box-shadow: var(--shadow-sm);
+      border-left: 6px solid var(--gold);
+      transition: var(--transition);
+    }
+
+    .share-item:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .share-item .share-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 0.6rem;
+    }
+
+    .share-item .share-header .author {
+      font-weight: 700;
+      color: var(--jinan-blue);
+      font-size: 1.05rem;
+    }
+
+    .share-item .share-header .role-tag {
+      background: #e8eef8;
+      padding: 0.15rem 0.8rem;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--jinan-blue);
+    }
+
+    .share-item .share-header .role-tag.senior {
+      background: #fce8e8;
+      color: var(--zhenguang-red);
+    }
+
+    .share-item .share-header .role-tag.junior {
+      background: #e0f0e8;
+      color: #2a6b4a;
+    }
+
+    .share-item .share-content {
+      color: var(--text-dark);
+      font-size: 1rem;
+      margin: 0.6rem 0;
+      white-space: pre-wrap;
+    }
+
+    .share-item .share-meta {
+      font-size: 0.8rem;
+      color: #7a8a9a;
+      margin-top: 0.6rem;
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    /* ========== 校园风光 ========== */
+    .campus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1.2rem;
+      margin: 1.2rem 0;
+    }
+
+    .campus-item {
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0, 51, 102, 0.1);
+      background: #dce6f2;
+      height: 170px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--jinan-blue);
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 0.5rem;
+      border: 1px solid #b8cae0;
+      transition: var(--transition);
+    }
+
+    .campus-item:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 18px rgba(0, 51, 102, 0.15);
+    }
+
+    /* ========== 官方通知 ========== */
+    .notice-card {
+      background: #f8faff;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+      border-left: 6px solid var(--zhenguang-red);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .notice-card h4 {
+      color: var(--jinan-blue-dark);
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .notice-card p {
+      margin-bottom: 0.3rem;
+      font-size: 0.95rem;
+    }
+
+    .notice-date {
+      font-size: 0.8rem;
+      color: #7a8a9a;
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    /* ========== 报考资讯 ========== */
+    .score-table-placeholder {
+      background: #eef3fc;
+      border-radius: 16px;
+      padding: 2rem;
+      text-align: center;
+      color: var(--jinan-blue);
+      border: 2px dashed #b8cae0;
+      margin: 1.5rem 0;
+    }
+
+    .score-table-placeholder i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: var(--gold);
+    }
+
+    .resource-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .resource-item {
+      background: #f0f4fa;
+      padding: 1.5rem;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: var(--transition);
+      cursor: pointer;
+      border: 1px solid #dce6f2;
+    }
+
+    .resource-item:hover {
+      background: #e2ebf6;
+      transform: scale(1.02);
+    }
+
+    .resource-item i {
+      font-size: 2.2rem;
+      color: var(--jinan-blue);
+      margin-bottom: 1rem;
+    }
+
+    .resource-item span {
+      font-weight: 600;
+      color: var(--jinan-blue-dark);
+    }
+
+    /* ========== 活动锦集 ========== */
+    .activity-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .activity-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+      border: 1px solid #e0e8f2;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .activity-image {
+      height: 180px;
+      background: linear-gradient(135deg, #dce6f2, #c0d2e8);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--jinan-blue);
+      font-size: 1rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 1rem;
+      position: relative;
+    }
+
+    .activity-image i {
+      font-size: 2.5rem;
+      margin-right: 10px;
+      color: var(--gold);
+    }
+
+    .activity-body {
+      padding: 1.5rem;
+    }
+
+    .activity-body h4 {
+      color: var(--jinan-blue-dark);
+      font-size: 1.15rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .activity-body p {
+      color: var(--text-soft);
+      font-size: 0.92rem;
+    }
+
+    .activity-date {
+      font-size: 0.8rem;
+      color: #7a8a9a;
+      margin-top: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* ========== 页脚 ========== */
+    .footer {
+      margin-top: auto;
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-soft);
+      font-size: 0.9rem;
+      border-top: 1px solid #dce6f2;
+      background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="50" viewBox="0 0 100 50"><path d="M0 25 Q 25 10, 50 25 T 100 25" fill="none" stroke="%23003366" stroke-width="0.5" opacity="0.1"/></svg>');
+      background-repeat: repeat;
+    }
+
+    .footer i {
+      color: var(--zhenguang-red);
+    }
+
+    /* ========== 响应式 ========== */
+    @media (max-width: 900px) {
+      .sidebar {
+        transform: translateX(-100%);
+        width: 260px;
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 1.5rem;
+      }
+
+      .menu-toggle {
+        display: flex;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 2rem;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .news-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .role-selector {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .hero-stats {
+        flex-direction: column;
+        gap: 0.8rem;
+      }
+
+      .main-content {
+        padding: 1rem;
+      }
+
+      .section-card {
+        padding: 1.5rem;
+      }
+
+      .campus-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .activity-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 99;
+    }
+
+    .overlay.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 移动端菜单开关 -->
+  <button class="menu-toggle" id="menuToggle">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- 侧边遮罩（移动端） -->
+  <div class="overlay" id="overlay"></div>
+
+  <!-- 应用主容器 -->
+  <div class="app-wrapper">
+    <!-- ===== 左侧抽屉导航 ===== -->
+    <aside class="sidebar" id="sidebar">
+      <div class="logo-area">
+        <div class="logo-icon">真</div>
+        <div class="logo-text">真光·暨大<br><span>校友站</span></div>
+      </div>
+
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#" data-page="home" class="active"><i class="fas fa-home"></i> 首页</a></li>
+        <li><a href="#" data-page="intro"><i class="fas fa-school"></i> 一、学校简介</a></li>
+        <li><a href="#" data-page="campus"><i class="fas fa-images"></i> 二、校园风光</a></li>
+        <li><a href="#" data-page="notice"><i class="fas fa-bullhorn"></i> 三、官方通知</a></li>
+        <li><a href="#" data-page="admission"><i class="fas fa-chart-line"></i> 四、报考资讯</a></li>
+        <li><a href="#" data-page="alumni"><i class="fas fa-users"></i> 五、校友动态</a></li>
+        <li><a href="#" data-page="share"><i class="fas fa-comments"></i> 六、分享与Q&A</a></li>
+        <li><a href="#" data-page="activities"><i class="fas fa-calendar-alt"></i> 七、活动锦集</a></li>
+      </ul>
+
+      <div class="user-badge" id="userBadge">
+        <i class="fas fa-bell"></i>
+        <span>互动消息</span>
+        <span class="badge-count" id="notificationCount">3</span>
+      </div>
+    </aside>
+
+    <!-- ===== 主内容区 ===== -->
+    <main class="main-content" id="mainContent">
+      <!-- ---------- 首页 ---------- -->
+      <div id="home" class="page active-page">
+        <div class="hero">
+          <div>
+            <h1>真光 · 暨南<br>校友之家</h1>
+            <p>红墙绿瓦，忠信仁爱；宏教泽而系侨情。连接真光中学与暨南大学的校友网络，共享资源，共叙情谊。</p>
+            <div class="hero-stats">
+              <div class="stat-item">
+                <span class="stat-number">2,300+</span>
+                <span class="stat-label">注册校友</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">18</span>
+                <span class="stat-label">行业社群</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">56</span>
+                <span class="stat-label">场活动</span>
+              </div>
+            </div>
+          </div>
+          <div class="interactive-zone">
+            <h3><i class="fas fa-hand-pointer"></i> 快速互动</h3>
+            <div class="quick-actions">
+              <button class="btn btn-primary" id="greetBtn"><i class="fas fa-hands-helping"></i> 校友问候</button>
+              <button class="btn btn-outline" id="randomConnectBtn"><i class="fas fa-random"></i> 随机连接校友</button>
+              <button class="btn btn-outline" id="resetInteractBtn"><i class="fas fa-undo-alt"></i> 重置</button>
+            </div>
+            <div class="feedback-msg" id="feedbackMessage">点击按钮体验互动 👆</div>
+          </div>
+        </div>
+
+        <div class="section-title">
+          <h2><i class="fas fa-star"></i> 活跃校友</h2>
+          <span style="color: var(--text-soft);">点赞支持他们</span>
+        </div>
+        <div class="card-grid" id="featuredAlumniGrid">
+          <!-- JS 动态生成 -->
+        </div>
+      </div>
+
+      <!-- ---------- 一、学校简介（暨大/真光混合背景） ---------- -->
+      <div id="intro" class="page">
+        <div class="section-card bg-jinan">
+          <h2><i class="fas fa-school"></i> 一、学校简介</h2>
+
+          <h3>暨南大学简介</h3>
+          <p>暨南大学是中央统战部直属的“双一流”建设高校，由中央统战部、教育部、广东省人民政府共同建设。学校是中国第一所由政府创办的华侨学府，素有“华侨最高学府”之美誉。“暨南”之名出自《尚书·禹贡》：“东渐于海，西被于流沙，朔南暨，声教讫于四海”，承载着传播中华文化、联结四海侨胞的使命与襟怀。学校前身为1906年清政府在南京创立的暨南学堂，1927年定名为国立暨南大学；抗战烽火中辗转闽沪办学，1958年在广州重建，1978年复办启航，1996年跻身国家“211工程”重点建设大学，并连续两轮入选国家“双一流”建设高校。</p>
+          <p>120年的办学征程中，学校始终坚守“宏教泽而系侨情”的办学宗旨，恪守“忠信笃敬”的校训，秉持“面向海外，面向港澳台”的办学方针，铸就了“忠信笃敬、知行合一、自强不息、和而不同”的暨南精神。建校至今，已为170多个国家和地区培养各类人才60余万人。</p>
+
+          <h3>真光中学简介</h3>
+          <p>广州市真光中学，创办于1872年，是岭南地区最早办学的学校之一，办学成绩突出，为国家建设培养了大量人才。学校历史悠久，环境优美，师资雄厚，书香浓郁，社团活动丰富是学生成长成才的好地方。学校秉承“尔乃世之光”的校训精神，守正创新，坚持活动育人，拓展育人渠道，坚持管理育人，构筑育人保障。引领学生努力实现有爱心、会思考、勤实践、强体魄之“真光教育”的美好愿景。</p>
+
+          <div class="highlight-quote">
+            <i class="fas fa-quote-left" style="color: var(--gold); margin-right: 8px;"></i>
+            植根于开放包容、融通中外的广州，两校同为扎根岭南的百年名校，发轫于近代中外文明交融之际，历经岁月迁衍，文脉生生不息，培育一代代优秀学子走向世界。真光中学肇始于教会办学，秉持“尔乃世之光”，培育学子求真理，爱光明；暨南大学作为华侨第一学府，恪守“忠信笃敬”，以侨校担当享誉四海。两校一脉相承育人初心，跨越学段延续近代开放交融的办学底色，接续传递积极的精神力量。
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- 二、校园风光（混合背景） ---------- -->
+      <div id="campus" class="page">
+        <div class="section-card bg-zhenguang" style="background-color: rgba(255, 255, 255, 0.9);">
+          <h2><i class="fas fa-images"></i> 二、校园风光</h2>
+
+          <h3>真光中学</h3>
+          <p style="font-size: 0.9rem; color: #6a7a8a;">（来自26届同学们的拍摄）</p>
+          <div class="campus-grid">
+            <div class="campus-item">真光教学楼 · 26届同学拍摄</div>
+            <div class="campus-item">真光晚霞 · 26届同学拍摄</div>
+            <div class="campus-item">真光彩虹 · 26届同学拍摄</div>
+            <div class="campus-item">真光亭 · 26届同学拍摄</div>
+          </div>
+
+          <h3>暨南大学</h3>
+          <p style="font-size: 0.9rem; color: #6a7a8a;">（来自学校官网和26届同学的拍摄）</p>
+          <div class="campus-grid">
+            <div class="campus-item">暨大石牌校区 · 官网</div>
+            <div class="campus-item">暨大南湖 · 26届同学拍摄</div>
+            <div class="campus-item">暨大图书馆 · 官网</div>
+            <div class="campus-item">暨大珠海校区 · 26届同学拍摄</div>
+          </div>
+          <p style="font-size: 0.9rem; color: #6a7a8a; margin-top: 0.5rem;"><i class="fas fa-camera"></i> 图片素材后续可替换为真实照片。</p>
+        </div>
+      </div>
+
+      <!-- ---------- 三、官方通知（混合背景） ---------- -->
+      <div id="notice" class="page">
+        <div class="section-card bg-zhenguang" style="background-color: rgba(255, 255, 255, 0.92);">
+          <h2><i class="fas fa-bullhorn"></i> 三、相关官方通知</h2>
+          <p style="font-size: 0.9rem; color: #6a7a8a;">（仅提供少部分重要信息参考，详情请查阅官网）【持续手动后台更新】</p>
+
+          <div class="notice-card">
+            <h4>暨南大学 120 周年校庆公告(第二号)</h4>
+            <p>自120周年校庆第一号公告发布以来，各级领导悉心关怀，各位校董鼎力相助，全校师生员工、离退休老同志、海内外校友及社会各界友人热切响应、共襄盛举，谨此致以衷心的感谢和崇高的敬意！</p>
+            <p>11月16日上午，学校将隆重召开建校120周年高质量发展大会。校庆期间，还将陆续举办系列学术、文化及校友返校活动(详细安排见附件)，全方位展现学校百廿办学成就与新时代奋进风貌。热忱期盼海内外校友及社会各界贤达相聚暨南园，共沐百廿荣光，携手擘画高质量发展新蓝图！</p>
+            <p>特此公告，敬祈周知。</p>
+            <span class="notice-date"><i class="fas fa-calendar-alt"></i> 暨南大学 · 2026年11月2日</span>
+          </div>
+
+          <div class="notice-card">
+            <h4>奋进新征程·筑梦新时代 —— 2025年广州市真光教育集团艺术节文艺汇演</h4>
+            <p>将在广州市真光中学本部校区举行，汇演现场将同步直播。</p>
+            <p>时间: 19:00—21:00</p>
+            <p>地点: 真光运动场</p>
+            <span class="notice-date"><i class="fas fa-calendar-alt"></i> 真光中学</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- 四、报考资讯（暨大花纹） ---------- -->
+      <div id="admission" class="page">
+        <div class="section-card bg-jinan">
+          <h2><i class="fas fa-chart-line"></i> 四、报考资讯</h2>
+          <p>（仅供参考，详情请查阅官方资料）</p>
+          <p>官方路径：<strong>暨南大学本科生院</strong> <a href="https://zsb.jnu.edu.cn" target="_blank" style="color: var(--jinan-blue);">https://zsb.jnu.edu.cn</a></p>
+
+          <h3>近年各专业录取分数线【后续持续更新】</h3>
+          <div class="score-table-placeholder">
+            <i class="fas fa-table"></i>
+            <p><strong>暨南大学2025年在广东录取分数线</strong></p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem;">文档中提供了物理类/历史类详细的分专业录取人数、最高分、平均分、最低分及排位。由于数据表格较大，此处用占位示意，后续可整理为可折叠表格或提供下载链接。</p>
+            <p style="margin-top: 1rem; font-weight: 600;">📌 示例：物理类汇总最低分591，排位34231；历史类法学最低分619，排位2120。</p>
+            <p style="font-size: 0.85rem; margin-top: 0.8rem;">发布时间: 2026-04-02 · 浏览量: 44347</p>
+          </div>
+
+          <h3>资料库 (示例)</h3>
+          <div class="resource-list">
+            <div class="resource-item" onclick="alert('资料《真光校史》即将上传')">
+              <i class="fas fa-book-open"></i>
+              <span>真光校史</span>
+            </div>
+            <div class="resource-item" onclick="alert('资料《暨南校友通讯》即将上传')">
+              <i class="fas fa-newspaper"></i>
+              <span>暨南校友通讯</span>
+            </div>
+            <div class="resource-item" onclick="alert('校友活动照片库即将开放')">
+              <i class="fas fa-images"></i>
+              <span>活动照片</span>
+            </div>
+            <div class="resource-item" onclick="alert('行业讲座视频即将上线')">
+              <i class="fas fa-video"></i>
+              <span>讲座视频</span>
+            </div>
+          </div>
+
+          <h3 style="margin-top: 2rem;">✉️ 联系我们</h3>
+          <p><i class="fas fa-envelope" style="color: var(--zhenguang-red);"></i> alumni@zhenguang-jinan.org （示例）</p>
+          <p><i class="fas fa-phone-alt" style="color: var(--zhenguang-red);"></i> +86 20 8888 8888 （示例）</p>
+        </div>
+      </div>
+
+      <!-- ---------- 五、校友动态（暨大花纹） ---------- -->
+      <div id="alumni" class="page">
+        <div class="section-title">
+          <h2><i class="fas fa-bullhorn"></i> 五、校友动态</h2>
+          <span style="color: var(--text-soft);">最新活动与新闻</span>
+        </div>
+
+        <div class="news-feed" id="newsFeed">
+          <!-- 动态内容由JS生成 -->
+        </div>
+
+        <div class="interactive-zone" style="margin-top: 2rem;">
+          <h3><i class="fas fa-pen"></i> 发布动态 (模拟)</h3>
+          <div class="quick-actions">
+            <button class="btn btn-primary" id="postNewsBtn"><i class="fas fa-bullhorn"></i> 发布一条校友动态</button>
+            <button class="btn btn-outline" id="clearFeedBtn"><i class="fas fa-trash-alt"></i> 清空动态</button>
+          </div>
+          <div class="feedback-msg" id="newsFeedback">点击按钮与动态互动</div>
+        </div>
+      </div>
+
+      <!-- ---------- 六、学长学姐分享 & Q&A（暨大花纹） ---------- -->
+      <div id="share" class="page">
+        <div class="section-card bg-jinan">
+          <h2><i class="fas fa-comments"></i> 六、学长学姐分享 & 学弟学妹Q&A</h2>
+          <p>选择您的身份，分享经验或提出疑问，所有内容对访问者可见。</p>
+
+          <div class="role-selector" id="roleSelector">
+            <div class="role-option" data-role="senior" id="roleSenior">
+              <i class="fas fa-user-graduate"></i>
+              <h4>学长学姐</h4>
+              <p>分享你的大学经验、专业选择、校园生活……</p>
+            </div>
+            <div class="role-option" data-role="junior" id="roleJunior">
+              <i class="fas fa-user-friends"></i>
+              <h4>学弟学妹</h4>
+              <p>提出你的疑问，获取学长学姐的解答。</p>
+            </div>
+          </div>
+
+          <div class="share-form" id="shareFormContainer" style="display: none;">
+            <h3 id="formTitle"><i class="fas fa-pen"></i> 分享你的经验</h3>
+            <div class="form-group">
+              <label for="shareName">你的称呼</label>
+              <input type="text" id="shareName" placeholder="例如：2022届真光校友 / 2024级暨大新生">
+            </div>
+            <div class="form-group">
+              <label for="shareContent" id="contentLabel">分享内容</label>
+              <textarea id="shareContent" placeholder="写下你的经验分享或问题……"></textarea>
+            </div>
+            <button class="btn btn-primary" id="submitShareBtn"><i class="fas fa-paper-plane"></i> 发布</button>
+            <span class="feedback-msg" id="shareFeedback" style="display: inline-block; margin-left: 1rem;"></span>
+          </div>
+
+          <h3 style="margin-top: 2rem;"><i class="fas fa-list"></i> 全部分享与问答</h3>
+          <div class="share-list" id="shareList">
+            <!-- 由JS动态渲染 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ---------- 七、活动锦集（混合背景） ---------- -->
+      <div id="activities" class="page">
+        <div class="section-card bg-zhenguang" style="background-color: rgba(255, 255, 255, 0.92);">
+          <h2><i class="fas fa-calendar-alt"></i> 七、活动锦集</h2>
+          <p>回顾真光与暨大校友活动的精彩瞬间。</p>
+
+          <div class="activity-grid" id="activityGrid">
+            <!-- 由JS动态渲染，包含文档中的图片占位 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 页脚 -->
+      <footer class="footer">
+        <p><i class="fas fa-heart"></i> 真光中学 · 暨南大学校友站 · 主体蓝色取自暨大校徽 · 左侧抽屉导航</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;">互动功能已就绪，可扩展更多模块</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- 侧边栏与移动端菜单 ----------
+      const sidebar = document.getElementById('sidebar');
+      const menuToggle = document.getElementById('menuToggle');
+      const overlay = document.getElementById('overlay');
+      const mainContent = document.getElementById('mainContent');
+
+      function isMobile() {
+        return window.innerWidth <= 900;
+      }
+
+      function initSidebar() {
+        if (isMobile()) {
+          sidebar.style.transform = 'translateX(-100%)';
+          mainContent.style.marginLeft = '0';
+          mainContent.style.width = '100%';
+          overlay.classList.remove('active');
+        } else {
+          sidebar.style.transform = 'translateX(0)';
+          mainContent.style.marginLeft = '280px';
+          mainContent.style.width = 'calc(100% - 280px)';
+          overlay.classList.remove('active');
+        }
+      }
+
+      menuToggle.addEventListener('click', function() {
+        if (isMobile()) {
+          const isOpen = sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)';
+          if (isOpen) {
+            sidebar.style.transform = 'translateX(-100%)';
+            overlay.classList.remove('active');
+          } else {
+            sidebar.style.transform = 'translateX(0)';
+            overlay.classList.add('active');
+          }
+        } else {
+          if (sidebar.style.transform === 'translateX(0px)' || sidebar.style.transform === 'translateX(0)') {
+            sidebar.style.transform = 'translateX(-100%)';
+            mainContent.style.marginLeft = '0';
+            mainContent.style.width = '100%';
+          } else {
+            sidebar.style.transform = 'translateX(0)';
+            mainContent.style.marginLeft = '280px';
+            mainContent.style.width = 'calc(100% - 280px)';
+          }
+        }
+      });
+
+      overlay.addEventListener('click', function() {
+        if (isMobile()) {
+          sidebar.style.transform = 'translateX(-100%)';
+          overlay.classList.remove('active');
+        }
+      });
+
+      window.addEventListener('resize', initSidebar);
+      initSidebar();
+
+      // ---------- 页面切换 ----------
+      const navLinks = document.querySelectorAll('.nav-links a');
+      const pages = {
+        home: document.getElementById('home'),
+        intro: document.getElementById('intro'),
+        campus: document.getElementById('campus'),
+        notice: document.getElementById('notice'),
+        admission: document.getElementById('admission'),
+        alumni: document.getElementById('alumni'),
+        share: document.getElementById('share'),
+        activities: document.getElementById('activities')
+      };
+
+      function switchPage(pageId) {
+        Object.values(pages).forEach(page => {
+          if (page) page.classList.remove('active-page');
+        });
+        if (pages[pageId]) pages[pageId].classList.add('active-page');
+
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.dataset.page === pageId) link.classList.add('active');
+        });
+
+        if (isMobile()) {
+          sidebar.style.transform = 'translateX(-100%)';
+          overlay.classList.remove('active');
+        }
+      }
+
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const pageId = link.dataset.page;
+          if (pageId) switchPage(pageId);
+        });
+      });
+
+      // ---------- 数据 ----------
+      const alumniData = [
+        { id: 1, name: '陈真光', badge: '2012届 · 真光', desc: '暨南大学新闻系，现任媒体主编。乐于为学弟妹提供实习指导。', likes: 24, liked: false },
+        { id: 2, name: '李暨南', badge: '2015届 · 暨大', desc: '金融行业校友，真光中学校友会理事，组织过多场职业分享会。', likes: 18, liked: false },
+        { id: 3, name: '王校友', badge: '2018届 · 真光→暨大', desc: '计算机科学与技术，现创业中，可为校友提供技术咨询。', likes: 32, liked: false }
+      ];
+
+      const newsData = [
+        { id: 1, title: '真光-暨大校友秋季联谊会圆满结束', date: '2025-10-12', author: '校友会', likes: 12 },
+        { id: 2, title: '暨南大学校友导师计划启动，欢迎报名', date: '2025-09-30', author: '秘书处', likes: 8 },
+        { id: 3, title: '真光中学135周年校庆，校友返校日安排', date: '2025-11-05', author: '理事会', likes: 21 }
+      ];
+
+      let shareData = [
+        { id: 1, name: '2022届真光校友', role: 'senior', content: '大学最重要的是找到自己的节奏，不要盲目跟风。暨大的图书馆资源很丰富，多去挖掘。', date: '2025-10-01' },
+        { id: 2, name: '2024级暨大新生', role: 'junior', content: '请问学长学姐，大学英语四级应该怎么准备？什么时候考比较好？', date: '2025-10-05' },
+        { id: 3, name: '2021届暨大校友', role: 'senior', content: '四级尽早考，大一上就可以开始准备。多刷真题，听力每天练半小时。加油！', date: '2025-10-06' }
+      ];
+
+      const activityData = [
+        { id: 1, title: '真光校园 · 26届同学拍摄', desc: '红墙绿瓦，青春记忆。', date: '2025-09-15', imageLabel: '真光教学楼' },
+        { id: 2, title: '真光晚霞 · 26届同学拍摄', desc: '夕阳下的校园，宁静美好。', date: '2025-09-20', imageLabel: '真光晚霞' },
+        { id: 3, title: '真光彩虹 · 26届同学拍摄', desc: '雨过天晴，彩虹横跨校园。', date: '2025-09-25', imageLabel: '真光彩虹' },
+        { id: 4, title: '真光亭 · 26届同学拍摄', desc: '古亭绿树，书香氤氲。', date: '2025-10-01', imageLabel: '真光亭' },
+        { id: 5, title: '暨大石牌校区 · 官网', desc: '暨南大学石牌校区全景。', date: '2025-10-05', imageLabel: '暨大石牌' },
+        { id: 6, title: '暨大南湖 · 26届同学拍摄', desc: '湖光倒影，亭台水榭。', date: '2025-10-10', imageLabel: '暨大南湖' },
+        { id: 7, title: '暨大图书馆 · 官网', desc: '知识的殿堂，学术的海洋。', date: '2025-10-12', imageLabel: '暨大图书馆' },
+        { id: 8, title: '暨大珠海校区 · 26届同学拍摄', desc: '现代化校园，活力无限。', date: '2025-10-15', imageLabel: '暨大珠海' }
+      ];
+
+      // ---------- 渲染 ----------
+      const featuredGrid = document.getElementById('featuredAlumniGrid');
+      function renderAlumniCards() {
+        if (!featuredGrid) return;
+        featuredGrid.innerHTML = alumniData.map(alumni => `
+          <div class="alumni-card" data-id="${alumni.id}">
+            <div class="avatar">${alumni.name.charAt(0)}</div>
+            <h3>${alumni.name}</h3>
+            <span class="badge">${alumni.badge}</span>
+            <p>${alumni.desc}</p>
+            <div class="card-actions">
+              <button class="like-btn ${alumni.liked ? 'liked' : ''}" data-id="${alumni.id}">
+                <i class="fas fa-heart"></i> <span class="like-count">${alumni.likes}</span>
+              </button>
+              <a href="#" class="contact-link" onclick="alert('模拟: 向 ${alumni.name} 发送消息'); return false;">
+                <i class="fas fa-comment"></i> 联系
+              </a>
+            </div>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('#featuredAlumniGrid .like-btn').forEach(btn => {
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = parseInt(this.dataset.id);
+            const alumni = alumniData.find(a => a.id === id);
+            if (alumni) {
+              if (alumni.liked) {
+                alumni.likes--;
+                alumni.liked = false;
+                this.classList.remove('liked');
+              } else {
+                alumni.likes++;
+                alumni.liked = true;
+                this.classList.add('liked');
+              }
+              this.querySelector('.like-count').textContent = alumni.likes;
+            }
+          });
+        });
+      }
+
+      const newsFeed = document.getElementById('newsFeed');
+      const newsFeedback = document.getElementById('newsFeedback');
+      function renderNews() {
+        if (!newsFeed) return;
+        newsFeed.innerHTML = newsData.map(item => `
+          <div class="news-item" data-id="${item.id}">
+            <div class="news-content">
+              <h4>${item.title}</h4>
+              <div class="news-meta">
+                <span><i class="fas fa-calendar-alt"></i> ${item.date}</span>
+                <span><i class="fas fa-user"></i> ${item.author}</span>
+                <span><i class="fas fa-heart" style="color:var(--zhenguang-red);"></i> ${item.likes}</span>
+              </div>
+            </div>
+            <div class="news-actions">
+              <button class="news-like-btn" data-id="${item.id}"><i class="fas fa-thumbs-up"></i> 点赞</button>
+            </div>
+          </div>
+        `).join('');
+
+        document.querySelectorAll('.news-like-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const news = newsData.find(n => n.id === id);
+            if (news) {
+              news.likes++;
+              renderNews();
+              newsFeedback.textContent = `已点赞: ${news.title}`;
+            }
+          });
+        });
+      }
+
+      document.getElementById('postNewsBtn')?.addEventListener('click', function() {
+        const newId = newsData.length + 1;
+        const newNews = {
+          id: newId,
+          title: `新校友动态 #${newId} (互动生成)`,
+          date: new Date().toISOString().slice(0, 10),
+          author: '热心校友',
+          likes: 0
+        };
+        newsData.unshift(newNews);
+        renderNews();
+        newsFeedback.textContent = `已发布新动态：${newNews.title}`;
+        const badge = document.getElementById('notificationCount');
+        if (badge) badge.textContent = parseInt(badge.textContent) + 1;
+      });
+
+      document.getElementById('clearFeedBtn')?.addEventListener('click', function() {
+        if (newsData.length > 1) newsData.splice(1);
+        else newsData.length = 0;
+        renderNews();
+        newsFeedback.textContent = '动态已清空 (已保留最新一条示例)';
+      });
+
+      // 首页互动
+      const feedbackMsg = document.getElementById('feedbackMessage');
+      const greetBtn = document.getElementById('greetBtn');
+      const randomConnectBtn = document.getElementById('randomConnectBtn');
+      const resetInteractBtn = document.getElementById('resetInteractBtn');
+      let greetCount = 0;
+
+      greetBtn?.addEventListener('click', function() {
+        greetCount++;
+        feedbackMsg.textContent = `👋 你已向校友送出第 ${greetCount} 次问候！真光暨大一家亲。`;
+        const badge = document.getElementById('notificationCount');
+        if (badge) badge.textContent = parseInt(badge.textContent) + 1;
+      });
+
+      randomConnectBtn?.addEventListener('click', function() {
+        const randomAlumni = alumniData[Math.floor(Math.random() * alumniData.length)];
+        feedbackMsg.textContent = `✨ 随机连接到了 ${randomAlumni.name}（${randomAlumni.badge}），快去动态页联系TA吧！`;
+        const badge = document.getElementById('notificationCount');
+        if (badge) badge.textContent = parseInt(badge.textContent) + 1;
+      });
+
+      resetInteractBtn?.addEventListener('click', function() {
+        greetCount = 0;
+        feedbackMsg.textContent = '点击按钮体验互动 👆 (计数已重置)';
+        document.getElementById('notificationCount').textContent = '3';
+        alumniData.forEach(a => { a.likes = a.id === 1 ? 24 : (a.id === 2 ? 18 : 32); a.liked = false; });
+        renderAlumniCards();
+        renderNews();
+      });
+
+      document.getElementById('userBadge')?.addEventListener('click', function() {
+        alert('互动消息中心 (演示)：\n· 3条新互动\n· 1条校友回复\n· 1个活动邀请');
+        document.getElementById('notificationCount').textContent = '0';
+      });
+
+      // 六、分享与Q&A
+      const roleSenior = document.getElementById('roleSenior');
+      const roleJunior = document.getElementById('roleJunior');
+      const shareFormContainer = document.getElementById('shareFormContainer');
+      const formTitle = document.getElementById('formTitle');
+      const contentLabel = document.getElementById('contentLabel');
+      const shareName = document.getElementById('shareName');
+      const shareContent = document.getElementById('shareContent');
+      const submitShareBtn = document.getElementById('submitShareBtn');
+      const shareFeedback = document.getElementById('shareFeedback');
+      const shareList = document.getElementById('shareList');
+
+      let currentRole = null;
+
+      roleSenior.addEventListener('click', function() {
+        currentRole = 'senior';
+        roleSenior.classList.add('selected');
+        roleJunior.classList.remove('selected');
+        shareFormContainer.style.display = 'block';
+        formTitle.innerHTML = '<i class="fas fa-pen"></i> 分享你的经验';
+        contentLabel.textContent = '分享内容';
+        shareContent.placeholder = '写下你的大学经验、专业选择、校园生活……';
+      });
+
+      roleJunior.addEventListener('click', function() {
+        currentRole = 'junior';
+        roleJunior.classList.add('selected');
+        roleSenior.classList.remove('selected');
+        shareFormContainer.style.display = 'block';
+        formTitle.innerHTML = '<i class="fas fa-question-circle"></i> 提出你的疑问';
+        contentLabel.textContent = '你的问题';
+        shareContent.placeholder = '写下你想问学长学姐的问题……';
+      });
+
+      function renderShareList() {
+        if (!shareList) return;
+        shareList.innerHTML = shareData.map(item => `
+          <div class="share-item" data-id="${item.id}">
+            <div class="share-header">
+              <span class="author">${item.name}</span>
+              <span class="role-tag ${item.role}">${item.role === 'senior' ? '学长学姐' : '学弟学妹'}</span>
+            </div>
+            <div class="share-content">${item.content}</div>
+            <div class="share-meta">
+              <span><i class="fas fa-calendar-alt"></i> ${item.date}</span>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      submitShareBtn.addEventListener('click', function() {
+        const name = shareName.value.trim();
+        const content = shareContent.value.trim();
+        if (!currentRole) {
+          shareFeedback.textContent = '请先选择身份（学长学姐 / 学弟学妹）';
+          return;
+        }
+        if (!name || !content) {
+          shareFeedback.textContent = '请填写称呼和内容';
+          return;
+        }
+        const newId = shareData.length + 1;
+        const newItem = {
+          id: newId,
+          name: name,
+          role: currentRole,
+          content: content,
+          date: new Date().toISOString().slice(0, 10)
+        };
+        shareData.unshift(newItem);
+        renderShareList();
+        shareFeedback.textContent = '发布成功！';
+        shareName.value = '';
+        shareContent.value = '';
+        const badge = document.getElementById('notificationCount');
+        if (badge) badge.textContent = parseInt(badge.textContent) + 1;
+        setTimeout(() => { shareFeedback.textContent = ''; }, 2000);
+      });
+
+      // 七、活动锦集
+      const activityGrid = document.getElementById('activityGrid');
+      function renderActivities() {
+        if (!activityGrid) return;
+        activityGrid.innerHTML = activityData.map(item => `
+          <div class="activity-card">
+            <div class="activity-image">
+              <i class="fas fa-camera"></i> ${item.imageLabel}
+            </div>
+            <div class="activity-body">
+              <h4>${item.title}</h4>
+              <p>${item.desc}</p>
+              <div class="activity-date">
+                <i class="fas fa-calendar-alt"></i> ${item.date}
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+
+      // 初始化
+      renderAlumniCards();
+      renderNews();
+      renderShareList();
+      renderActivities();
+      switchPage('home');
+    })();
+  </script>
+</body>
+</html>
